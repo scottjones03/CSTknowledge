@@ -1,0 +1,23 @@
+{% extends "template.html" %}
+{% block body %}
+
+<div class="container">
+    <h2 class="page-title">Home Page</h2>
+    <p class="lead-text">Welcome to the automatic note creator! Please upload a PDF to start generating notes.</p>
+
+    <form action="/account" method="POST" enctype="multipart/form-data" class="upload-form">
+        <div class="form-group">
+            <label for="name">Input Name:</label>
+            <input type="text" name="name" id="name" placeholder="Your Name" class="form-field">
+        </div>
+
+        <div class="form-group">
+            <label for="pdfFile">Upload PDFs</label>
+            <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" multiple>
+        </div>
+        
+        <input type="submit" value="Submit" class="submit-btn">
+    </form>
+</div>
+
+{% endblock %}

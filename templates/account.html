@@ -1,0 +1,14 @@
+{% extends "template.html" %} {% block body %}
+
+<h2>Submission Page</h2>
+<p>This is the submission page!</p>
+
+<br>
+<h3>Welcome {{username}} with pdf {{pdfName}}</h3>
+<p>Your data is being processed and will be in Notion soon.</p>
+<br>
+<form action="/home" method="POST">
+    <input type="submit" value="Home" class="home-btn">
+</form>
+
+{% endblock %}
