@@ -1,6 +1,6 @@
 import requests
 from typing import List
-
+from private import NOTION_TOKEN
 class NotionAPI:
     DATABASE_ID = "695ece9dd1a749c2a94ddeea02d1fce3"
 
@@ -14,25 +14,12 @@ class NotionAPI:
         formatted_text = []
         start_bold = False
         start_italic = False
-        split_text = text.split()
+        split_text = text.split('***')
 
-        for word in split_text:
-            if '***' in word:
-                start_bold = not start_bold
-                start_italic = not start_italic
-                formatted_word = word.replace('***', '')
-                formatted_text.append({'type': 'text', 'text': {'content': formatted_word, 'annotations': {'bold': start_bold, 'italic': start_italic, 'strikethrough': False, 'underline': False, 'code': False, 'color': 'default'}}})
-            if '**' in word:
-                start_bold = not start_bold
-                formatted_word = word.replace('**', '')
-                formatted_text.append({'type': 'text', 'text': {'content': formatted_word, 'annotations': {'bold': start_bold, 'italic': False, 'strikethrough': False, 'underline': False, 'code': False, 'color': 'default'}}})
-            elif '*' in word:
-                start_italic = not start_italic
-                formatted_word = word.replace('*', '')
-                formatted_text.append({'type': 'text', 'text': {'content': formatted_word, 'annotations': {'bold': False, 'italic': start_italic, 'strikethrough': False, 'underline': False, 'code': False, 'color': 'default'}}})
-            else:
-                formatted_text.append({'type': 'text', 'text': {'content': word}})
-                
+        for txt in split_text:
+            formatted_txt=txt.replace("*", "")
+            formatted_text.append({'type': 'text', 'text': {'content': formatted_txt,'link': None}, 'annotations': {'bold': start_bold, 'italic': start_italic, 'strikethrough': False, 'underline': False, 'code': False, 'color': 'default'}, 'plain_text': f'{formatted_txt}', 'href': None})
+            start_bold = not start_bold
         return formatted_text
     
     def create_page(self, name: str, texts: List[str] = [], author: str = ''):
@@ -44,10 +31,11 @@ class NotionAPI:
         for text in texts:
             chunks = ['']
             for line in text.splitlines(True):
-                if len(chunks[-1])+len(line)<2000:
+                if (len(chunks[-1])+len(line)<1500 or ("*" not in line and len(chunks[-1])+len(line)<2000 )):
                     chunks[-1]+=line
                 else:
                     chunks.append(line) 
+            
             for chunk in chunks:
                 data["children"].append(
                     {
@@ -108,4 +96,3 @@ class NotionAPI:
                 payload = {"archived": True}
 
                 res = requests.patch(url, json=payload, headers=self._headers)
-               
