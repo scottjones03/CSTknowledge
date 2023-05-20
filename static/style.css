@@ -1,7 +1,7 @@
 body {
     font-family: 'Roboto', sans-serif;
     color: #e0e0e0;
-    background-color: #121212;
+    background-color: rgba(18, 18, 41, 0.67);
     margin: 0;
     padding: 0;
 }
@@ -13,7 +13,7 @@ body {
 }
 
 .header {
-    background-color: #121212;
+    background-color: rgba(18, 18, 41, 0.67);
     padding: 20px;
     text-align: center;
     border-bottom: 1px solid #333;
@@ -66,3 +66,70 @@ body {
 .processing-text {
     color: #00c2a8;
 }
+
+.file-content {
+    background-color: #333333;
+    color: #cfcfcf;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(135, 135, 135, 0.1);
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.file-content h1 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.file-content h2 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.file-content p {
+    margin-bottom: 10px;
+    font-family: monospace;
+}
+
+.file-content ul {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-family: monospace;
+}
+
+.file-content li {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-family: monospace;
+}
+
+.file-content code {
+    font-size: 14px;
+    font-family: 'Courier New', Courier, monospace;
+    color: #ffffff;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.file-content a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.file-content a:hover {
+    text-decoration: underline;
+}
+

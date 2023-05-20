@@ -10,11 +10,30 @@
             <label for="name">Input Name:</label>
             <input type="text" name="name" id="name" placeholder="Your Name" class="form-field">
         </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" class="form-field">
+        </div>
+        
 
         <div class="form-group">
             <label for="pdfFile">Upload PDFs</label>
             <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" multiple>
         </div>
+
+        <div class="form-group">
+            <label for="spinBox1">Start Page Index:</label>
+            <input type="number" id="spinBox1" name="spinBox1" min="0" max="100" step="1" value="0">
+        </div>
+
+        <div class="form-group">
+            <label for="modelSelect">Select Model:</label>
+            <select id="modelSelect" name="modelSelect">
+                <option value="3">Model 3</option>
+                <option value="4">Model 4</option>
+            </select>
+        </div>
+        
         
         <input type="submit" value="Submit" class="submit-btn">
     </form>

@@ -1,8 +1,9 @@
 import requests
 from typing import List
-from private import NOTION_TOKEN
+import os
+
 class NotionAPI:
-    DATABASE_ID = "695ece9dd1a749c2a94ddeea02d1fce3"
+    DATABASE_ID = os.environ.get("DATABASE_ID")
 
     def __init__(self, token) -> None:
         self._headers = {
@@ -17,7 +18,7 @@ class NotionAPI:
         split_text = text.split('***')
 
         for txt in split_text:
-            formatted_txt=txt.replace("*", "")
+            formatted_txt = txt.replace('*','')
             formatted_text.append({'type': 'text', 'text': {'content': formatted_txt,'link': None}, 'annotations': {'bold': start_bold, 'italic': start_italic, 'strikethrough': False, 'underline': False, 'code': False, 'color': 'default'}, 'plain_text': f'{formatted_txt}', 'href': None})
             start_bold = not start_bold
         return formatted_text
@@ -96,3 +97,4 @@ class NotionAPI:
                 payload = {"archived": True}
 
                 res = requests.patch(url, json=payload, headers=self._headers)
+

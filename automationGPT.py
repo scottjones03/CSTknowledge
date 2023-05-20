@@ -145,6 +145,15 @@ class ChatGPT:
             self.logger.debug('Closing display...')
             self.display.stop()
 
+    def delete(self):
+        self.__is_active = False
+        if hasattr(self, 'driver'):
+            self.logger.debug('Closing browser...')
+            self.driver.quit()
+        if hasattr(self, 'display'):
+            self.logger.debug('Closing display...')
+            self.display.stop()
+
     def __init_logger(self, verbose: bool) -> None:
         '''
         Initialize the logger\n
@@ -302,7 +311,10 @@ class ChatGPT:
                     )
                 )
                 self.logger.debug('ChatGPT is at capacity, retrying...')
-                self.driver.get(target_url)
+                if self.__model=='4':
+                    self.driver.get(f'{chatgpt_chat_url}/?model=gpt-4')
+                else:
+                    self.driver.get(f'{chatgpt_chat_url}')
             except SeleniumExceptions.TimeoutException:
                 self.logger.debug('ChatGPT is not at capacity')
                 break
@@ -544,7 +556,10 @@ class ChatGPT:
         if not self.driver.current_url.startswith(chatgpt_chat_url):
             return self.logger.debug('Current URL is not chat page, skipping refresh')
 
-        self.driver.get(chatgpt_chat_url)
+        if self.__model=='4':
+            self.driver.get(f'{chatgpt_chat_url}/?model=gpt-4')
+        else:
+            self.driver.get(f'{chatgpt_chat_url}')
         self.__check_capacity(chatgpt_chat_url)
         self.__check_blocking_elements()
         
@@ -558,7 +573,7 @@ class ChatGPT:
          if not self.driver.current_url.startswith(chatgpt_chat_url):
              return self.logger.debug('Current URL is not chat page, skipping close')
 
-         self.driver.close()
+         self.driver.quit()
 
     def close_chat_research_popup(self) -> None:
         '''

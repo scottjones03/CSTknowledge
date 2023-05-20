@@ -1,19 +1,19 @@
 from automationGPT import ChatGPT
 import re
 import fitz
-import time
 from typing import List
 import logging
 from notionAPI import NotionAPI
+import os
 
 class GPT4API:
-    def __init__(self, api: ChatGPT, session_token: str, notion: NotionAPI, model: str = '4', sticky_model: bool = True):
+    def __init__(self, session_token: str, notion: NotionAPI, model: str = '4', sticky_model: bool = True):
         self.pdfs: List[str] = []
         self._sticky_model = sticky_model
         self._model = model
         self._notion = notion
         self._session_token: str = session_token
-        self.api = api
+        self.api = ChatGPT(session_token, model=model)
         self.__init_logger(True)
 
     def __init_logger(self, verbose: bool) -> None:
@@ -93,8 +93,10 @@ class GPT4API:
                 chunks_idx_idx = 0
                 chunks_idx += 1
         for message_prompt in message_prompt_list:
-            prompt = data_prompt+message_prompt
-            a = self._generate_text(prompt)
+            for _ in range(1):
+                prompt = data_prompt+message_prompt
+                a = self._generate_text(prompt)
+                
             answer += a
             answer += '\n\n'
         chunks_idxs[0] = chunks_idx
@@ -103,30 +105,35 @@ class GPT4API:
 
     def _regenerate_session(self) -> None:
         while True:
-            if self._sticky_model:
-                time.sleep(3600)
             try:
-                self.api.refresh_chat_page()
+                self.api.close_chat_page()
             except Exception as e:
-                self.logger.error(f'Could not quit api. {e}')
+                self.logger.error(e)
+            # time.sleep(180)
+            try:
+                self.api.delete()
+                self.api=ChatGPT(self._session_token, model=self._model, verbose=True)
+                return
+            except Exception as e:
+                self.logger.error(e)
 
-    def parsePDF(self, name: str, doc_path_name: str, prompts: List[str], first_chunks_idxs: List[int] = [0, 0]):
+
+    def parsePDF(self, name: str, doc_path_name: str, prompts: List[str], first_chunks_idxs: int = 0):
         texts = GPT4API.get_pdf_text(doc_path_name, start_page=1)
         chunks = GPT4API.text_to_chunks(texts, start_page=1)
         blocks = [f'***Notes for {name}***\n\n']
-        chunks_idxs = first_chunks_idxs
-        while (chunks_idxs[0] <= len(chunks)):
+        chunks_idxs = [first_chunks_idxs, 0]
+        while (chunks_idxs[0] < len(chunks)):
             try:
                 ans = self.generate_answer(chunks, chunks_idxs, prompts)
                 blocks.append(ans)
-                with open(f'out/{name}.txt', 'a') as f:
+                with open(os.path.join(os.environ.get("TEXT_FOLDER"), name), 'a') as f:
                     f.write(ans)
                 self._notion.delete_page(name)
                 self._notion.create_page(name, blocks)
                 self.logger.debug(
                     f"Output produced: {chunks_idxs[0]} \n {ans}")
+                
             except Exception as e:
                 self.logger.error(e)
                 self._regenerate_session()
-        
-        self.api.refresh_chat_page()
